@@ -1,0 +1,1 @@
+export const fallbackErrorMessage = 'Sorry there was an error.';
