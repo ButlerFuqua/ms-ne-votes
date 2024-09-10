@@ -1,14 +1,14 @@
 import { Hono } from "https://jsr.io/@hono/hono/4.5.11/src/hono.ts";
 import { Context } from "hono";
-import { LawsService } from "../services/index.ts";
+import { VotesService } from "../services/index.ts";
 
 export class UsersController {
 
     app: Hono;
-    service: LawsService;
+    service: VotesService;
     constructor(app: Hono){
         this.app = app;
-        this.service = new LawsService();
+        this.service = new VotesService();
     }
 
     addRoutes(){

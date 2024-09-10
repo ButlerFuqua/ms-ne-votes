@@ -1,1 +1,1 @@
-export * from './lawsService.ts'
+export * from './votesService.ts'

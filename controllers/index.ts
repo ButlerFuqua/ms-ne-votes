@@ -1,1 +1,1 @@
-export * from "./lawsController.ts"
+export * from "./votesController.ts"
