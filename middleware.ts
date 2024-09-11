@@ -1,7 +1,8 @@
 import { Context, Hono } from "hono";
 import { bearerAuth } from 'hono/bearer-auth';
 import "jsr:@std/dotenv/load";
-import { HTTPException } from 'hono/http-exception'
+import { HTTPException } from 'hono/http-exception';
+import { logger } from 'hono/logger';
 
 
 export class Middleware{
@@ -12,6 +13,7 @@ export class Middleware{
     }
 
     addMiddleware(){
+        this.app.use(logger());
         this.app.use(async (context: Context, next) => {
             if (!context.req.header()['api-key'] || !Deno.env.get("API_KEY")  || context.req.header()['api-key'] !== Deno.env.get("API_KEY")!) {
                 throw new HTTPException(401, { message: 'Unauthorized' })
