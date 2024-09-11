@@ -21,11 +21,7 @@ export class BillsService{
     }
 
     async searchBills(): Promise<Bill[]>{
-
-        await BillsDbService.searchBills();
-        
-
-        return [];
+        return BillsDbService.searchBills();
     }
 
 }
