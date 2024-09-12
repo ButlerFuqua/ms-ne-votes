@@ -5,16 +5,19 @@ import "jsr:@std/dotenv/load";
 
 import { HTTPException } from "jsr:@hono/hono@^4.5.11/http-exception";
 import { VotesService, BillsService } from "../services/index.ts";
+import { MembersService } from "../services/membersService.ts";
 
 export class AdminController {
 
     app: Hono;
     billsService: BillsService;
     votesService: VotesService;
+    membersService: MembersService;
     constructor(app: Hono){
         this.app = app;
         this.billsService = new BillsService();
         this.votesService = new VotesService();
+        this.membersService = new MembersService();
     }
 
     addRoutes(){
@@ -48,6 +51,17 @@ export class AdminController {
 
             context.status(200);
             return context.json(await this.votesService.createVotesFromLegiscanAndDb());
+        });
+
+
+        this.app.post('/admin/create-members-legiscan-and-db', async (context: Context) => {
+
+            if (Deno.env.get("ENV") !== 'local') {
+                throw new HTTPException(401);
+            }
+
+            context.status(200);
+            return context.json(await this.membersService.createMembersFromLegiscan());
         });
     }
 
