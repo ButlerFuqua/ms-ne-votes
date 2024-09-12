@@ -4,7 +4,6 @@ import "jsr:@std/dotenv/load";
 
 
 import { VotesService } from "../services/index.ts";
-import { HTTPException } from "jsr:@hono/hono@^4.5.11/http-exception";
 
 export class VotesController {
 

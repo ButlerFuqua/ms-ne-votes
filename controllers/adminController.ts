@@ -17,7 +17,7 @@ export class AdminController {
 
     addRoutes(){
 
-        this.app.post('/admin/local/create', async (context: Context) => {
+        this.app.post('/admin/create-bills-legiscan', async (context: Context) => {
         
             if (Deno.env.get("ENV") !== 'local') {
                 throw new HTTPException(401);
@@ -26,7 +26,7 @@ export class AdminController {
             context.status(200);
             const body = await context.req.json();
             return context.json(await this.billsService.createBillsFromLegiscanApi({ states: body["states"] }));
-        })
+        });
     }
 
 }
