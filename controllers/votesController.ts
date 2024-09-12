@@ -15,10 +15,10 @@ export class VotesController {
     }
 
     addRoutes(){
-        this.app.get('/votes', (context: Context) => {
-            context.status(200);
-            return context.json(this.service.searchAll());
-        });
+        // this.app.get('/votes', (context: Context) => {
+        //     context.status(200);
+        //     return context.json(this.service.searchAll());
+        // });
     }
 
 }
