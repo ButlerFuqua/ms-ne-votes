@@ -1,11 +1,12 @@
 import "jsr:@std/dotenv/load";
 
-import { RollCallVoteDTO } from "../models/index.ts";
+import { BillLegiscanPopulated, BillLegiscanVoteItem, RollCallVoteDTO } from "../models/index.ts";
 import { BillsDbService } from "../persistance/billsDbService.ts";
 import { BillsService } from "./billsService.ts";
-import { isVoteRollCallXmlValid, getMinFiveDigitStringFromNumber, getPrimaryKeyFromRolLCallVoteDTO } from "../utils/index.ts";
+import { isVoteRollCallXmlValid, getMinFiveDigitStringFromNumber, getRollCallVoteDbFromBillLegiscanVoteItem,  } from "../utils/index.ts";
 import { VotesDbService } from "../persistance/votesDbService.ts";
 import { getBillDTOFromLegiscanBill } from "../utils/billUtils.ts";
+import { RollCallVoteDB } from "../models/vote.ts";
 
 const rolCallBaseUrl = Deno.env.get("CONGRESSIONAL_ROLL_CALL_VOTE_URL")!;
 const congressApiKey = Deno.env.get("CONGRESSIONAL_API_KEY")!;
@@ -25,7 +26,24 @@ export class VotesService{
     async createVotesFromLegiscanAndDb() {
 
         // Get bills from db
-        // C
+        const bills = await BillsDbService.searchBills();
+
+        const votes: RollCallVoteDB[][] = [];
+        for (let idx = 0; idx < bills.length; idx++) {
+            const bill = bills[idx];
+            const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getBill&id=${bill.legiscan_bill_id}`);
+            const { bill: populatedBill }: { bill: BillLegiscanPopulated } = await response.json();
+            const upsertedRollCallVotes = await VotesDbService.upsertRollCalls(populatedBill.votes.map(vote => getRollCallVoteDbFromBillLegiscanVoteItem({ ...vote, legiscan_bill_id: bill.bill_id})))
+            
+            votes.push(upsertedRollCallVotes);
+        }
+        
+
+        
+
+
+
+        return votes;
 
         // TODO: Change to create votes
 

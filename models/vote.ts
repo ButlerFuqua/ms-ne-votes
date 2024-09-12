@@ -4,10 +4,23 @@ export type Vote = {
 
 export type RollCallVoteDTO = {
     id?: string;
-    congress: number;
-    xml_string: string;
-    vote_number: string;
-    session: number;
+    legiscan_bill_id: number;
+    legiscan_roll_call_id: number;
+    date?: string;
+    legiscan_desc?: string;
+    yea_count?: number;
+    nay_count?: number;
+    nv_count?: number;
+    absent?: number;
+    total?: number;
+    passed?: number;
+    chamber?: string;
+    legiscan_chamber_id?: number;
+    legiscan_url?: string;
+    legiscan_state_link?: string;
+    
+
+    session?: number;
 }
 
 
