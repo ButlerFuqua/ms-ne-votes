@@ -24,9 +24,44 @@ export class VotesService{
 
     async createVotesFromLegiscanAndDb() {
 
+        // Get bills from db
+        // C
+
         // TODO: Change to create votes
 
+        /**
+         * From Legiscan API
         
+        {
+    "status": "OK",
+    "roll_call": {
+        "roll_call_id": 2,
+        "bill_id": 60721,
+        "date": "2009-05-26",
+        "desc": "AB 853 ARAMBULA  Assembly Third Reading",
+        "yea": 47,
+        "nay": 30,
+        "nv": 3,
+        "absent": 0,
+        "total": 80,
+        "passed": 1,
+        "chamber": "A",
+        "chamber_id": 19,
+        "votes": [
+            {
+                "people_id": 1493,
+                "vote_id": 2,
+                "vote_text": "Nay"
+            },
+            ...
+    ]
+            ...
+    }
+
+
+         */
+
+
         // const bills: any[] = [];
 
         // for (let index = 0; index < temp_stateAbbreviations.length; index++) {

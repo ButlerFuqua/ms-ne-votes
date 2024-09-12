@@ -1,7 +1,7 @@
 import "jsr:@std/dotenv/load";
-import { Bill, BillCongress } from "../models/bill.ts";
+import { Bill, BillCongress, BillDbLegiscanDTO, BillLegiscan } from "../models/bill.ts";
 import { BillsDbService } from "../persistance/billsDbService.ts";
-import { getBillFromDbBillType, getBillDbFromCongressBill, getBillDTOFromLegiscanBill } from "../utils/index.ts";
+import { getBillFromDbBillType, getBillDTOFromLegiscanBill } from "../utils/index.ts";
 
 const legiscanUrl = Deno.env.get("LEGISCAN_URL")!
 const legiscanKey = Deno.env.get("LEGISCAN_KEY")!
@@ -16,24 +16,9 @@ const stateAbbreviations = [
 
 export class BillsService{
 
-
-    async createBillsFromCongressApi(){
-
-        const response = await fetch("https://api.congress.gov/v3/bill/", {headers: {
-            'x-api-key': Deno.env.get("CONGRESSIONAL_API_KEY")!
-        }});
-        const { bills }: {bills: BillCongress[]} = await response.json();
-
-        const upsertedBills = await BillsDbService.upsertBills(bills.map(getBillDbFromCongressBill));
-
-
-        return upsertedBills.map(getBillFromDbBillType);        
-
-    }
-
     async createBillsFromLegiscanApi({states}: {states: string[]}) {
 
-        const bills: any[] = [];
+        const bills: any[][] = [];
 
         const temp_stateAbbreviations = stateAbbreviations.filter(st => states.map(state => state.toLowerCase()).includes(st.toLowerCase()));
         for (let index = 0; index < temp_stateAbbreviations.length; index++) {
@@ -41,8 +26,7 @@ export class BillsService{
             const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getMasterList&state=${state}`);
             const { masterlist: masterList } = await response.json();
             delete masterList.session;
-            bills.push(Object.keys(masterList).map(key => masterList[key]));
-            console.log(masterList);
+            bills.push(Object.keys(masterList).map(key => ({ ...masterList[key], state_abbreviation: state})));
         }
 
         const upsertedBills = await BillsDbService.upsertBills(bills.flat().map(getBillDTOFromLegiscanBill));

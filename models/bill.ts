@@ -29,7 +29,7 @@ export type BillLegiscan = {
 }
 
 export type BillDbCongressDTO = {
-    id?: string; // DB id
+    id: string; // DB id
     congress: number;
     number: string;
     title?: string;
@@ -56,6 +56,7 @@ export type BillDbLegiscanDTO = {
     legiscan_last_action_date?: string;
     legiscan_last_action?: string;
     description?: string;
+    state_abbreviation?: string;
 }
 
 export type BillDb = BillDbLegiscanDTO & {

@@ -1,10 +1,15 @@
 import { Bill, BillCongress, BillDb, BillDbCongressDTO, BillDbLegiscanDTO, BillLegiscan } from "../models/bill.ts"
 
+
+// bill_id is from legisacn
+export const getBillDBIdFromDTOAndState = ({number, bill_id }: BillLegiscan, stateAbbreviation: string)  => `${bill_id}-${number}-${stateAbbreviation}`;
+
 export const getBillFromDbBillType = (billDb: BillDb) : Bill =>({
     ...billDb
 });
 
-export const getBillDTOFromLegiscanBill = (bill: BillLegiscan): BillDbLegiscanDTO => ({
+export const getBillDTOFromLegiscanBill = (bill: BillLegiscan & {state_abbreviation: string;}): BillDbLegiscanDTO => ({
+    id: getBillDBIdFromDTOAndState(bill, bill.state_abbreviation),
     title: bill.title,
     number: bill.number,
     legiscan_bill_id: bill.bill_id,
@@ -17,17 +22,3 @@ export const getBillDTOFromLegiscanBill = (bill: BillLegiscan): BillDbLegiscanDT
     description: bill.description,
 })
 
-export const getBillDbFromCongressBill = (congressBill: BillCongress): BillDbCongressDTO =>({
-    congress: congressBill.congress,
-    number: congressBill.number,
-    title: congressBill.title,
-    latest_action_date: congressBill.latestAction?.actionDate,
-    latest_action_time: congressBill.latestAction?.actionTime,
-    latest_action_text: congressBill.latestAction?.text,
-    origin_chamber: congressBill.originChamber,
-    origin_chamber_code: congressBill.originChamberCode,
-    type: congressBill.type,
-    update_date: congressBill.updateDate,
-    update_date_including_text: congressBill.updateDateIncludingText,
-    congress_gov_url: congressBill.url,
-});
