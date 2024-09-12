@@ -37,11 +37,6 @@ export class VotesService{
             
             votes.push(upsertedRollCallVotes);
         }
-        
-
-        
-
-
 
         return votes;
 
