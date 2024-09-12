@@ -6,7 +6,7 @@ import "jsr:@std/dotenv/load";
 import { VotesService } from "../services/index.ts";
 import { HTTPException } from "jsr:@hono/hono@^4.5.11/http-exception";
 
-export class UsersController {
+export class VotesController {
 
     app: Hono;
     service: VotesService;
@@ -20,17 +20,6 @@ export class UsersController {
             context.status(200);
             return context.json(this.service.searchAll());
         });
-
-        
-        this.app.post('/votes/local/create', async (context: Context) => {
-
-            if(Deno.env.get("ENV") !== 'local'){
-                throw new HTTPException(401);
-            }
-
-            context.status(200);
-            return context.json(await this.service.createAndStoreVotes());
-        })
     }
 
 }

@@ -1,22 +1,23 @@
-import { Bill, BillCongress, BillDb, BillDbDTO } from "../models/bill.ts"
+import { Bill, BillCongress, BillDb, BillDbCongressDTO, BillDbLegiscanDTO, BillLegiscan } from "../models/bill.ts"
 
 export const getBillFromDbBillType = (billDb: BillDb) : Bill =>({
-    id: billDb.id,
-    congress: billDb.congress,
-    number: billDb.number,
-    title: billDb.title,
-    latestActionDate: billDb.latest_action_date,
-    latestActionTime: billDb.latest_action_time,
-    latestActionText: billDb.latest_action_text,
-    originChamber: billDb.origin_chamber,
-    originChamberCode: billDb.origin_chamber_code,
-    type: billDb.type,
-    updateDate: billDb.update_date,
-    updateDateIncludingText: billDb.update_date_including_text,
-    congressGovUrl: billDb.congress_gov_url,
+    ...billDb
 });
 
-export const getBillDbFromCongressBill = (congressBill: BillCongress): BillDbDTO =>({
+export const getBillDTOFromLegiscanBill = (bill: BillLegiscan): BillDbLegiscanDTO => ({
+    title: bill.title,
+    number: bill.number,
+    legiscan_bill_id: bill.bill_id,
+    legiscan_change_hash: bill.change_hash,
+    legiscan_url: bill.url,
+    legiscan_status_date: bill.status_date,
+    legiscan_status: bill.status,
+    legiscan_last_action_date: bill.last_action_date,
+    legiscan_last_action: bill.last_action,
+    description: bill.description,
+})
+
+export const getBillDbFromCongressBill = (congressBill: BillCongress): BillDbCongressDTO =>({
     congress: congressBill.congress,
     number: congressBill.number,
     title: congressBill.title,

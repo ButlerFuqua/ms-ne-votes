@@ -15,10 +15,23 @@ export type BillCongress = {
     url?: string;
 }
 
-export type BillDbDTO = {
+export type BillLegiscan = {
+    bill_id: number;
+    number: string;
+    change_hash: string;
+    url: string;
+    status_date: string;
+    status: number;
+    last_action_date: string;
+    last_action: string;
+    title: string;
+    description: string;
+}
+
+export type BillDbCongressDTO = {
+    id?: string; // DB id
     congress: number;
     number: string;
-    id?: string;
     title?: string;
     latest_action_date?: string;
     latest_action_time?: string;
@@ -31,22 +44,22 @@ export type BillDbDTO = {
     congress_gov_url?: string;
 }
 
-export type BillDb = BillDbDTO & {
+export type BillDbLegiscanDTO = {
+    id?: string; // DB id
+    title?: string;
+    number: string;
+    legiscan_bill_id?: number;
+    legiscan_change_hash?: string;
+    legiscan_url?: string;
+    legiscan_status_date?: string;
+    legiscan_status?: number;
+    legiscan_last_action_date?: string;
+    legiscan_last_action?: string;
+    description?: string;
+}
+
+export type BillDb = BillDbLegiscanDTO & {
     id: string;
 }
 
-export type Bill = {
-    id: string;
-    congress: number;
-    number: string;
-    title?: string;
-    latestActionDate?: string;
-    latestActionTime?: string;
-    latestActionText?: string;
-    originChamber?: string;
-    originChamberCode?: string;
-    type?: string;
-    updateDate?: string;
-    updateDateIncludingText?: string;
-    congressGovUrl?: string;
-}
+export type Bill = BillDb;

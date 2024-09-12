@@ -4,7 +4,10 @@ export type Vote = {
 
 export type RollCallVoteDTO = {
     id?: string;
+    congress: number;
     xml_string: string;
+    vote_number: string;
+    session: number;
 }
 
 

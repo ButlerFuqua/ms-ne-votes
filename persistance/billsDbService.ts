@@ -1,5 +1,5 @@
 import "jsr:@std/dotenv/load";
-import { BillDb, BillDbDTO } from "../models/bill.ts";
+import { BillDb, BillDbLegiscanDTO } from "../models/bill.ts";
 
 const sbApiKey = Deno.env.get("SUPABASE_KEY_ISM")!;
 const sbUrl = Deno.env.get("SUPABASE_URL")!;
@@ -11,7 +11,7 @@ const supabase = createClient(sbUrl, sbApiKey)
 
 export class BillsDbService{
 
-    static async upsertBills(bills: BillDbDTO[]): Promise<BillDb[]>{
+    static async upsertBills(bills: BillDbLegiscanDTO[]): Promise<BillDb[]>{
         const { data: upsertedBills, error } = await supabase
             .from('bills')
             .upsert(bills)
