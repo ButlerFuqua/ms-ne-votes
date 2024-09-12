@@ -30,6 +30,16 @@ export class AdminController {
             return context.json(await this.billsService.createBillsFromLegiscanApi({ states: body["states"] }));
         });
 
+        this.app.post('/admin/create-roll-calls-legiscan-and-db', async (context: Context) => {
+
+            if (Deno.env.get("ENV") !== 'local') {
+                throw new HTTPException(401);
+            }
+
+            context.status(200);
+            return context.json(await this.votesService.createRollCallsFromLegiscanAndDb());
+        });
+
         this.app.post('/admin/create-votes-legiscan-and-db', async (context: Context) => {
 
             if (Deno.env.get("ENV") !== 'local') {

@@ -1,12 +1,13 @@
 import "jsr:@std/dotenv/load";
 
-import { BillLegiscanPopulated, BillLegiscanVoteItem, RollCallVoteDTO } from "../models/index.ts";
+import { BillLegiscanPopulated, RollCallLegiscan, RollCallVoteDTO } from "../models/index.ts";
 import { BillsDbService } from "../persistance/billsDbService.ts";
 import { BillsService } from "./billsService.ts";
-import { isVoteRollCallXmlValid, getMinFiveDigitStringFromNumber, getRollCallVoteDbFromBillLegiscanVoteItem,  } from "../utils/index.ts";
+import { isVoteRollCallXmlValid, getMinFiveDigitStringFromNumber, getRollCallDbFromBillLegiscanVoteItem, getRollCallVoteDbFromBillLegiscanVote,  } from "../utils/index.ts";
 import { VotesDbService } from "../persistance/votesDbService.ts";
 import { getBillDTOFromLegiscanBill } from "../utils/billUtils.ts";
-import { RollCallVoteDB } from "../models/vote.ts";
+import { RollCallDB, RollCallVoteDB } from "../models/vote.ts";
+import _default from "npm:@supabase/postgrest-js@1.16.1";
 
 const rolCallBaseUrl = Deno.env.get("CONGRESSIONAL_ROLL_CALL_VOTE_URL")!;
 const congressApiKey = Deno.env.get("CONGRESSIONAL_API_KEY")!;
@@ -23,72 +24,60 @@ export class VotesService{
         this.billsService = new BillsService();
     }
 
-    async createVotesFromLegiscanAndDb() {
+    async createRollCallsFromLegiscanAndDb() {
 
         // Get bills from db
         const bills = await BillsDbService.searchBills();
 
-        const votes: RollCallVoteDB[][] = [];
-        for (let idx = 0; idx < bills.length; idx++) {
+
+        // Create Roll Calls
+        const rollCalls: RollCallDB[][] = [];
+        for (let idx = 0; idx < 100/*bills.length*/; idx++) {
             const bill = bills[idx];
             const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getBill&id=${bill.legiscan_bill_id}`);
             const { bill: populatedBill }: { bill: BillLegiscanPopulated } = await response.json();
-            const upsertedRollCallVotes = await VotesDbService.upsertRollCalls(populatedBill.votes.map(vote => getRollCallVoteDbFromBillLegiscanVoteItem({ ...vote, legiscan_bill_id: bill.bill_id})))
+            console.log('populatedBill', populatedBill)
+            if(populatedBill.votes.length < 1){
+                continue;
+            }
+            const upsertedRollCalls = await VotesDbService.upsertRollCalls(populatedBill.votes.map(rollCall => getRollCallDbFromBillLegiscanVoteItem({ ...rollCall, legiscan_bill_id: bill.bill_id})))
+            
+            rollCalls.push(upsertedRollCalls);
+        }
+
+        return rollCalls.flat();
+
+    }
+
+    async createVotesFromLegiscanAndDb() {
+
+        // Get bills from db
+        const rollCalls: RollCallDB[] = await VotesDbService.searchRollCalls();
+
+
+
+        // Create Roll Call Votes
+        const votes: RollCallVoteDB[][] = [];
+        for (let idx = 0; idx < rollCalls.length; idx++) {
+            const rollCall = rollCalls[idx];
+            const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getRollCall&id=${rollCall.legiscan_roll_call_id}`);
+
+            const responseBody: { roll_call?: RollCallLegiscan, status: string, alert: any } = await response.json();
+            if (responseBody.status.toLowerCase() !== "ok" ){
+                console.error(responseBody);
+                continue;
+            }
+            console.log('responseBody', responseBody)
+            const { roll_call: populatedRollCall } = responseBody;
+            if (! populatedRollCall || populatedRollCall?.votes.length < 1){
+                continue;
+            }
+            const upsertedRollCallVotes = await VotesDbService.upsertRollCallVotes(populatedRollCall.votes.map(vote => getRollCallVoteDbFromBillLegiscanVote(vote)))
             
             votes.push(upsertedRollCallVotes);
         }
 
-        return votes;
-
-        // TODO: Change to create votes
-
-        /**
-         * From Legiscan API
-        
-        {
-    "status": "OK",
-    "roll_call": {
-        "roll_call_id": 2,
-        "bill_id": 60721,
-        "date": "2009-05-26",
-        "desc": "AB 853 ARAMBULA  Assembly Third Reading",
-        "yea": 47,
-        "nay": 30,
-        "nv": 3,
-        "absent": 0,
-        "total": 80,
-        "passed": 1,
-        "chamber": "A",
-        "chamber_id": 19,
-        "votes": [
-            {
-                "people_id": 1493,
-                "vote_id": 2,
-                "vote_text": "Nay"
-            },
-            ...
-    ]
-            ...
-    }
-
-
-         */
-
-
-        // const bills: any[] = [];
-
-        // for (let index = 0; index < temp_stateAbbreviations.length; index++) {
-        //     const state = temp_stateAbbreviations[index];
-        //     const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getMasterList&state=${state}`);
-        //     const { masterlist: masterList } = await response.json();
-        //     delete masterList.session;
-        //     bills.push(Object.keys(masterList).map(key => masterList[key]));
-        //     console.log(masterList);
-        // }
-
-        // const upsertedBills = await BillsDbService.upsertBills(bills.flat().map(getBillDTOFromLegiscanBill));
-
-        return [];
+        return votes.flat();
 
     }
 

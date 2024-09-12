@@ -1,8 +1,21 @@
-export type Vote = {
-    id: string;
+export type RollCallLegiscan = {
+    roll_call_id: number;
+    date: string;
+    desc: string;
+    yea: number;
+    nay: number;
+    nv: number;
+    absent: number;
+    total: number;
+    passed: number;
+    chamber: string;
+    chamber_id: number;
+    url: string;
+    state_link: string;
+    votes: RollCallVoteLegiscan[]
 }
 
-export type RollCallVoteDTO = {
+export type RollCallDTO = {
     id?: string;
     legiscan_bill_id: number;
     legiscan_roll_call_id: number;
@@ -18,11 +31,27 @@ export type RollCallVoteDTO = {
     legiscan_chamber_id?: number;
     legiscan_url?: string;
     legiscan_state_link?: string;
-    
 
-    session?: number;
 }
 
+export type RollCallDB = RollCallDTO & {
+    id: string;
+}
+
+export type RollCallVoteLegiscan = {
+    people_id: number;
+    vote_id: number;
+    vote_text: string;
+    
+
+}
+
+export type RollCallVoteDTO = {
+    id?: string;
+    legiscan_people_id: number;
+    legiscan_vote_id: number;
+    legiscan_vote_text: string;
+}
 
 export type RollCallVoteDB = RollCallVoteDTO & {
     id: string;

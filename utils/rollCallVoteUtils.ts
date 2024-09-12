@@ -1,23 +1,32 @@
-import { BillLegiscanVoteItem, RollCallVoteDB } from "../models/index.ts";
+import { RollCallDB, RollCallLegiscan, RollCallVoteDB } from "../models/index.ts";
+import { RollCallVoteLegiscan } from "../models/vote.ts";
 
-export const getRollCallVotePkFromDTO = ({ roll_call_id }: BillLegiscanVoteItem) => `${roll_call_id}`;
+export const getRollCallPkFromDTO = ({ roll_call_id }: RollCallLegiscan) => `${roll_call_id}`;
+export const getRollCallVotePkFromDTO = ({ vote_id, people_id }: RollCallVoteLegiscan) => `${vote_id}-${people_id}`;
 
 export const isVoteRollCallXmlValid = (xmlString: string) => !xmlString.toLowerCase().includes('roll call vote unavailable');
 
-export const getRollCallVoteDbFromBillLegiscanVoteItem = (vote: BillLegiscanVoteItem & { legiscan_bill_id: number }): RollCallVoteDB => ({
+export const getRollCallDbFromBillLegiscanVoteItem = (rollCall: RollCallLegiscan & { legiscan_bill_id: number }): RollCallDB => ({
+    id: getRollCallPkFromDTO(rollCall),
+    legiscan_roll_call_id: rollCall.roll_call_id,
+    date: rollCall.date,
+    legiscan_desc: rollCall.desc,
+    yea_count: rollCall.yea,
+    nay_count: rollCall.nay,
+    nv_count: rollCall.nv,
+    absent: rollCall.absent,
+    total: rollCall.total,
+    passed: rollCall.passed,
+    chamber: rollCall.chamber,
+    legiscan_chamber_id: rollCall.chamber_id,
+    legiscan_url: rollCall.url,
+    legiscan_state_link: rollCall.state_link,
+    legiscan_bill_id: rollCall.legiscan_bill_id,
+});
+
+export const getRollCallVoteDbFromBillLegiscanVote = (vote: RollCallVoteLegiscan ): RollCallVoteDB => ({
     id: getRollCallVotePkFromDTO(vote),
-    legiscan_roll_call_id: vote.roll_call_id,
-    date: vote.date,
-    legiscan_desc: vote.desc,
-    yea_count: vote.yea,
-    nay_count: vote.nay,
-    nv_count: vote.nv,
-    absent: vote.absent,
-    total: vote.total,
-    passed: vote.passed,
-    chamber: vote.chamber,
-    legiscan_chamber_id: vote.chamber_id,
-    legiscan_url: vote.url,
-    legiscan_state_link: vote.state_link,
-    legiscan_bill_id: vote.legiscan_bill_id,
-})
+    legiscan_people_id: vote.people_id,
+    legiscan_vote_id: vote.vote_id,
+    legiscan_vote_text: vote.vote_text,
+});

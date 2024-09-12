@@ -1,5 +1,4 @@
 import "jsr:@std/dotenv/load";
-import { BillDb, } from "../models/bill.ts";
 
 const sbApiKey = Deno.env.get("SUPABASE_KEY_ISM")!;
 const sbUrl = Deno.env.get("SUPABASE_URL")!;
@@ -7,12 +6,26 @@ const sbUrl = Deno.env.get("SUPABASE_URL")!;
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { HTTPException } from "jsr:@hono/hono@^4.5.11/http-exception";
-import { RollCallVoteDB } from "../models/index.ts";
+import { RollCallDB, RollCallVoteDB } from "../models/index.ts";
 const supabase = createClient(sbUrl, sbApiKey)
 
 export class VotesDbService{
 
-    static async upsertRollCalls(rollCallVotes: RollCallVoteDB[]): Promise<RollCallVoteDB[]>{
+    static async upsertRollCalls(rollCallVotes: RollCallDB[]): Promise<RollCallDB[]>{
+        const { data: upsertedRollCalls, error } = await supabase
+            .from('roll_calls')
+            .upsert(rollCallVotes)
+            .select();
+
+            if(error){
+                throw new HTTPException(500, error);
+            }
+
+        return upsertedRollCalls ?? [];
+
+    }
+
+    static async upsertRollCallVotes(rollCallVotes: RollCallVoteDB[]): Promise<RollCallVoteDB[]>{
         const { data: upsertedRollCallVotes, error } = await supabase
             .from('roll_call_votes')
             .upsert(rollCallVotes)
@@ -24,6 +37,17 @@ export class VotesDbService{
 
         return upsertedRollCallVotes ?? [];
 
+    }
+
+    // TODO: Add search capabilities
+    static async searchRollCalls() {
+        const { data: rollCalls, error } = await supabase
+            .from('roll_calls')
+            .select('*');
+        if (error) {
+            throw new HTTPException(500, error);
+        }
+        return rollCalls;
     }
 
 

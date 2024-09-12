@@ -1,3 +1,5 @@
+import { RollCallLegiscan } from "./index.ts";
+
 export type BillCongress = {
     congress: number;
     number: string;
@@ -28,24 +30,10 @@ export type BillLegiscan = {
     description: string;
 }
 
-export type BillLegiscanVoteItem = {
-    roll_call_id: number;
-    date: string;
-    desc: string;
-    yea: number;
-    nay: number;
-    nv: number;
-    absent: number;
-    total: number;
-    passed: number;
-    chamber: string;
-    chamber_id: number;
-    url: string;
-    state_link: string;
-}
+
 
 export type BillLegiscanPopulated = BillLegiscan & {
-    votes: BillLegiscanVoteItem[];
+    votes: RollCallLegiscan[];
 }
 
 export type BillDbCongressDTO = {
