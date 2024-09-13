@@ -32,7 +32,7 @@ export class VotesService{
 
         // Create Roll Calls
         const rollCalls: RollCallDB[][] = [];
-        for (let idx = 0; idx < 100/*bills.length*/; idx++) {
+        for (let idx = 0; idx < bills.length; idx++) {
             const bill = bills[idx];
             const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getBill&id=${bill.legiscan_bill_id}`);
             const { bill: populatedBill }: { bill: BillLegiscanPopulated } = await response.json();
@@ -53,8 +53,6 @@ export class VotesService{
 
         // Get bills from db
         const rollCalls: RollCallDB[] = await VotesDbService.searchRollCalls();
-
-
 
         // Create Roll Call Votes
         const votes: RollCallVoteDB[][] = [];

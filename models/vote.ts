@@ -19,7 +19,7 @@ export type RollCallDTO = {
     id?: string;
     legiscan_bill_id: number;
     legiscan_roll_call_id: number;
-    date?: string;
+    date?: Date;
     legiscan_desc?: string;
     yea_count?: number;
     nay_count?: number;

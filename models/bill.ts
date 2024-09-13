@@ -59,9 +59,9 @@ export type BillDbLegiscanDTO = {
     legiscan_bill_id?: number;
     legiscan_change_hash?: string;
     legiscan_url?: string;
-    legiscan_status_date?: string;
+    legiscan_status_date?: Date;
     legiscan_status?: number;
-    legiscan_last_action_date?: string;
+    legiscan_last_action_date?: Date;
     legiscan_last_action?: string;
     description?: string;
     state_abbreviation?: string;

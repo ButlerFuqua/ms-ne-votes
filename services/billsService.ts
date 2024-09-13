@@ -27,11 +27,12 @@ export class BillsService{
             const { masterlist: masterList } = await response.json();
             delete masterList.session;
             bills.push(Object.keys(masterList).map(key => ({ ...masterList[key], state_abbreviation: state})));
+            console.log(masterList)
         }
 
         const upsertedBills = await BillsDbService.upsertBills(bills.flat().map(getBillDTOFromLegiscanBill));
 
-        return upsertedBills;
+        return upsertedBills.map(({id}) => id);
 
     }
 
