@@ -22,6 +22,42 @@ export class AdminController {
 
     addRoutes(){
 
+        this.app.post('/admin/upsert-db-from-legiscan', async (context: Context) => {
+
+            if (Deno.env.get("ENV") !== 'local') {
+                throw new HTTPException(401);
+            }
+
+            context.status(200);
+            const body = await context.req.json();
+
+            await this.billsService.createBillsFromLegiscanApi({ states: body["states"] });
+            await this.votesService.createRollCallsFromLegiscanAndDb();
+            await this.votesService.createVotesFromLegiscanAndDb();
+            await this.membersService.createMembersFromLegiscan();
+
+            return context.text("👍")
+        });
+
+
+        this.app.post('/admin/upsert-votes-and-members-from-legiscan', async (context: Context) => {
+
+            if (Deno.env.get("ENV") !== 'local') {
+                throw new HTTPException(401);
+            }
+
+            context.status(200);
+
+            await this.votesService.createRollCallsFromLegiscanAndDb();
+            await this.votesService.createVotesFromLegiscanAndDb();
+            await this.membersService.createMembersFromLegiscan();
+
+            return context.text("👍")
+        });
+
+
+        // 
+
         this.app.post('/admin/create-bills-legiscan', async (context: Context) => {
 
             if (Deno.env.get("ENV") !== 'local') {
