@@ -7,7 +7,7 @@ export const getRollCallVotePkFromDTO = ({ vote_id, people_id }: RollCallVoteLeg
 
 export const isVoteRollCallXmlValid = (xmlString: string) => !xmlString.toLowerCase().includes('roll call vote unavailable');
 
-export const getRollCallDbFromBillLegiscanVoteItem = (rollCall: RollCallLegiscan & { legiscan_bill_id: number }): RollCallDB => ({
+export const getRollCallDbFromBillLegiscanVoteItem = (rollCall: RollCallLegiscan ): RollCallDB => ({
     id: getRollCallPkFromDTO(rollCall),
     legiscan_roll_call_id: rollCall.roll_call_id,
     date: getDateFromDateString(rollCall.date),
@@ -22,12 +22,13 @@ export const getRollCallDbFromBillLegiscanVoteItem = (rollCall: RollCallLegiscan
     legiscan_chamber_id: rollCall.chamber_id,
     legiscan_url: rollCall.url,
     legiscan_state_link: rollCall.state_link,
-    legiscan_bill_id: rollCall.legiscan_bill_id,
+    legiscan_bill_id: rollCall.bill_id,
 });
 
-export const getRollCallVoteDbFromBillLegiscanVote = (vote: RollCallVoteLegiscan ): RollCallVoteDB => ({
+export const getRollCallVoteDbFromBillLegiscanVote = (vote: RollCallVoteLegiscan & {legiscan_bill_id: number, } ): RollCallVoteDB => ({
     id: getRollCallVotePkFromDTO(vote),
     legiscan_people_id: vote.people_id,
     legiscan_vote_id: vote.vote_id,
     legiscan_vote_text: vote.vote_text,
+    legiscan_bill_id: vote.legiscan_bill_id,
 });

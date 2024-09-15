@@ -1,5 +1,6 @@
 export type RollCallLegiscan = {
     roll_call_id: number;
+    bill_id: number;
     date: string;
     desc: string;
     yea: number;
@@ -51,6 +52,7 @@ export type RollCallVoteDTO = {
     legiscan_people_id: number;
     legiscan_vote_id: number;
     legiscan_vote_text: string;
+    legiscan_bill_id: number;
 }
 
 export type RollCallVoteDB = RollCallVoteDTO & {

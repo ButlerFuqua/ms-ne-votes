@@ -36,11 +36,15 @@ export class VotesService{
             const bill = bills[idx];
             const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getBill&id=${bill.legiscan_bill_id}`);
             const { bill: populatedBill }: { bill: BillLegiscanPopulated } = await response.json();
-            console.log('populatedBill', populatedBill)
+            // console.log('populatedBill', populatedBill)
             if(populatedBill.votes.length < 1){
                 continue;
             }
-            const upsertedRollCalls = await VotesDbService.upsertRollCalls(populatedBill.votes.map(rollCall => getRollCallDbFromBillLegiscanVoteItem({ ...rollCall, legiscan_bill_id: bill.bill_id})))
+
+            if(!populatedBill.bill_id){
+                throw new Error(`No bill_id found`)
+            }
+            const upsertedRollCalls = await VotesDbService.upsertRollCalls(populatedBill.votes.map(rollCall => getRollCallDbFromBillLegiscanVoteItem({...rollCall, bill_id: populatedBill.bill_id})))
             
             rollCalls.push(upsertedRollCalls);
         }
@@ -65,12 +69,15 @@ export class VotesService{
                 console.error(responseBody);
                 continue;
             }
-            console.log('responseBody', responseBody)
+            // console.log('responseBody', responseBody)
             const { roll_call: populatedRollCall } = responseBody;
             if (! populatedRollCall || populatedRollCall?.votes.length < 1){
                 continue;
             }
-            const upsertedRollCallVotes = await VotesDbService.upsertRollCallVotes(populatedRollCall.votes.map(vote => getRollCallVoteDbFromBillLegiscanVote(vote)))
+            const upsertedRollCallVotes = await VotesDbService.upsertRollCallVotes(populatedRollCall.votes.map(vote => getRollCallVoteDbFromBillLegiscanVote({
+                ...vote,
+                legiscan_bill_id: populatedRollCall.bill_id
+            })))
             
             votes.push(upsertedRollCallVotes);
         }
