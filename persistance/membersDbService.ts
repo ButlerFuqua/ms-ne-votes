@@ -35,6 +35,8 @@ export class MembersDbService{
             throw new HTTPException(500, error);
         }
 
+        console.log('upsertedMembers names', upsertedMembers.map(item => item.name))
+
         return upsertedMembers ?? [];
 
     }

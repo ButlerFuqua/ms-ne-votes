@@ -66,7 +66,6 @@ export class VotesService{
 
             const responseBody: { roll_call?: RollCallLegiscan, status: string, alert: any } = await response.json();
             if (responseBody.status.toLowerCase() !== "ok" ){
-                console.error(responseBody);
                 continue;
             }
             // console.log('responseBody', responseBody)
@@ -76,7 +75,8 @@ export class VotesService{
             }
             const upsertedRollCallVotes = await VotesDbService.upsertRollCallVotes(populatedRollCall.votes.map(vote => getRollCallVoteDbFromBillLegiscanVote({
                 ...vote,
-                legiscan_bill_id: populatedRollCall.bill_id
+                legiscan_bill_id: populatedRollCall.bill_id,
+                legiscan_roll_call_id: populatedRollCall.roll_call_id
             })))
             
             votes.push(upsertedRollCallVotes);

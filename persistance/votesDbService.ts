@@ -11,11 +11,7 @@ const supabase = createClient(sbUrl, sbApiKey)
 
 export class VotesDbService{
 
-    static async upsertRollCalls(rollCallVotes: RollCallDB[]): Promise<RollCallDB[]>{
-
-        const noBillId = rollCallVotes.filter(item => !item.legiscan_bill_id);
-        console.log('noBillIdCount', noBillId.length);
-        
+    static async upsertRollCalls(rollCallVotes: RollCallDB[]): Promise<RollCallDB[]>{        
 
         const { data: upsertedRollCalls, error } = await supabase
             .from('roll_calls')
@@ -26,7 +22,7 @@ export class VotesDbService{
                 throw new HTTPException(500, error);
             }
 
-            console.log('upsertedRollCallVotes', upsertedRollCalls.map(item => item.legiscan_bill_id))
+        console.log('upsertedRollCallVotes legiscan_bill_ids', upsertedRollCalls.map(item => item.legiscan_bill_id))
 
         return upsertedRollCalls ?? [];
 
@@ -42,7 +38,7 @@ export class VotesDbService{
                 throw new HTTPException(500, error);
             }
 
-        console.log('upsertedRollCallVotes', upsertedRollCallVotes.map(item => item.legiscan_bill_id))
+        console.log('upsertedRollCallVotes legiscan_bill_ids', upsertedRollCallVotes.map(item => item.legiscan_bill_id))
 
         return upsertedRollCallVotes ?? [];
 

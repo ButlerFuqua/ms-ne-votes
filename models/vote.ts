@@ -43,8 +43,6 @@ export type RollCallVoteLegiscan = {
     people_id: number;
     vote_id: number;
     vote_text: string;
-    
-
 }
 
 export type RollCallVoteDTO = {
@@ -53,6 +51,7 @@ export type RollCallVoteDTO = {
     legiscan_vote_id: number;
     legiscan_vote_text: string;
     legiscan_bill_id: number;
+    legiscan_roll_call_id: number;
 }
 
 export type RollCallVoteDB = RollCallVoteDTO & {

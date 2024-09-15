@@ -25,10 +25,11 @@ export const getRollCallDbFromBillLegiscanVoteItem = (rollCall: RollCallLegiscan
     legiscan_bill_id: rollCall.bill_id,
 });
 
-export const getRollCallVoteDbFromBillLegiscanVote = (vote: RollCallVoteLegiscan & {legiscan_bill_id: number, } ): RollCallVoteDB => ({
+export const getRollCallVoteDbFromBillLegiscanVote = (vote: RollCallVoteLegiscan & { legiscan_bill_id: number, legiscan_roll_call_id: number, } ): RollCallVoteDB => ({
     id: getRollCallVotePkFromDTO(vote),
     legiscan_people_id: vote.people_id,
     legiscan_vote_id: vote.vote_id,
     legiscan_vote_text: vote.vote_text,
     legiscan_bill_id: vote.legiscan_bill_id,
+    legiscan_roll_call_id: vote.legiscan_roll_call_id,
 });

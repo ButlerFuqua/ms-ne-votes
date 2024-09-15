@@ -41,7 +41,6 @@ export class MembersService{
             const memberId = memberIds[idx];
             const response = await fetch(`${legiscanUrl}/?key=${legiscanKey}&op=getPerson&id=${memberId}`);
             const { person, status }: { person?: MemberLegiscan, status: string, } = await response.json();
-            console.log('person', person)
             if (!person || status.toLowerCase() !== 'ok'){
                 console.error(`Error getting person with ID: ${memberId}. Status: ${status}`);
                 continue;
